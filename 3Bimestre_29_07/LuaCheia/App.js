@@ -1,166 +1,612 @@
-import { View, Text, Image, ScrollView, TextInput, StyleSheet } from 'react-native';
+import React, { useState } from 'react';
 
-const App = () => {
-  return (
-    <ScrollView style={styles.container}>
+import {
+  View,
+  Text,
+  FlatList,
+  TouchableOpacity,
+  Alert,
+  ScrollView,
+  StyleSheet
+} from 'react-native';
 
-      <Text style={styles.titulo}>
-        Ilê Axé - Artigos Religiosos
-      </Text>
+export default function Home() {
 
-      <Text style={styles.subtitulo}>
-        Candomblé • Umbanda • Cultura Africana
-      </Text>
+  const [carrinho, setCarrinho] = useState([]);
 
-      <Image
-        source={{
-          uri: 'https://images.unsplash.com/photo-1516026672322-bc52d61a55d5',
-        }}
-        style={styles.banner}
-      />
+  const produtos = [
+    {
+      id: '1',
+      nome: 'Tênis Esportivo',
+      categoria: 'Corrida',
+      preco: 199.90,
+      emoji: '👟'
+    },
+    {
+      id: '2',
+      nome: 'Camisa de Futebol',
+      categoria: 'Futebol',
+      preco: 89.90,
+      emoji: '⚽'
+    },
+    {
+      id: '3',
+      nome: 'Bola de Futebol',
+      categoria: 'Futebol',
+      preco: 119.90,
+      emoji: '⚽'
+    },
+    {
+      id: '4',
+      nome: 'Luvas de Academia',
+      categoria: 'Academia',
+      preco: 49.90,
+      emoji: '🏋️'
+    },
+    {
+      id: '5',
+      nome: 'Shorts Esportivo',
+      categoria: 'Corrida',
+      preco: 69.90,
+      emoji: '🩳'
+    },
+    {
+      id: '6',
+      nome: 'Garrafa Esportiva',
+      categoria: 'Acessórios',
+      preco: 39.90,
+      emoji: '🥤'
+    },
+    {
+      id: '7',
+      nome: 'Raquete de Tênis',
+      categoria: 'Tênis',
+      preco: 249.90,
+      emoji: '🎾'
+    },
+    {
+      id: '8',
+      nome: 'Mochila Esportiva',
+      categoria: 'Acessórios',
+      preco: 129.90,
+      emoji: '🎒'
+    }
+  ];
 
-      <Text style={styles.secao}>
-        Produtos Religiosos
-      </Text>
+  function adicionarCarrinho(produto) {
 
-      <View style={styles.card}>
-        <Image
-          source={{
-            uri: 'https://images.unsplash.com/photo-1603006905003-be475563bc59',
-          }}
-          style={styles.imagem}
-        />
+    setCarrinho([...carrinho, produto]);
 
-        <Text style={styles.nome}>
-          Charutos e Cachimbos para Entidades
-        </Text>
+    Alert.alert(
+      'Produto adicionado!',
+      produto.nome + ' foi adicionado ao carrinho.'
+    );
+  }
 
-        <Text style={styles.descricao}>
-          Produtos selecionados para trabalhos espirituais,
-          oferendas e práticas religiosas.
-        </Text>
-      </View>
+  function visualizarCarrinho() {
 
+    if (carrinho.length === 0) {
+      Alert.alert(
+        'Carrinho vazio',
+        'Você ainda não adicionou nenhum produto.'
+      );
 
-      <View style={styles.card}>
-        <Image
-          source={{
-            uri: 'https://images.unsplash.com/photo-1594736797933-d0e6f9f3f3c8',
-          }}
-          style={styles.imagem}
-        />
+      return;
+    }
 
-        <Text style={styles.nome}>
-          Imagens de Orixás e Entidades
-        </Text>
+    let total = carrinho.reduce(
+      (soma, produto) => soma + produto.preco,
+      0
+    );
 
-        <Text style={styles.descricao}>
-          Representações de Orixás, Guias e forças espirituais.
-        </Text>
-      </View>
+    Alert.alert(
+      'Seu carrinho',
+      'Produtos: ' +
+        carrinho.length +
+        '\nTotal: R$ ' +
+        total.toFixed(2)
+    );
+  }
 
+  function finalizarCompra() {
 
-      <View style={styles.card}>
-        <Image
-          source={{
-            uri: 'https://images.unsplash.com/photo-1500530855697-b586d89ba3ee',
-          }}
-          style={styles.imagem}
-        />
+    if (carrinho.length === 0) {
 
-        <Text style={styles.nome}>
-          Elementos Africanos
-        </Text>
+      Alert.alert(
+        'Carrinho vazio',
+        'Adicione algum produto antes de comprar.'
+      );
 
-        <Text style={styles.descricao}>
-          Colares, búzios, tecidos africanos e objetos culturais.
-        </Text>
-      </View>
+      return;
+    }
 
+    let total = carrinho.reduce(
+      (soma, produto) => soma + produto.preco,
+      0
+    );
 
-      <Text style={styles.secao}>
-        Pesquise um produto
-      </Text>
+    Alert.alert(
+      'Compra realizada!',
+      'Obrigado pela compra!\n\nTotal: R$ ' +
+        total.toFixed(2)
+    );
 
-      <TextInput
-        placeholder="Digite o que procura..."
-        style={styles.input}
-      />
+    setCarrinho([]);
+  }
 
-    </ScrollView>
+  const total = carrinho.reduce(
+    (soma, produto) => soma + produto.preco,
+    0
   );
-};
+
+  function mostrarOferta() {
+
+    Alert.alert(
+      '🔥 OFERTA ESPECIAL',
+      'Até 30% de desconto em produtos esportivos!'
+    );
+  }
+
+  function selecionarCategoria(categoria) {
+
+    Alert.alert(
+      'Categoria',
+      'Você selecionou: ' + categoria
+    );
+  }
+
+  function renderProduto({ item }) {
+
+    return (
+
+      <View style={styles.produto}>
+
+        <View style={styles.imagem}>
+
+          <Text style={styles.emoji}>
+            {item.emoji}
+          </Text>
+
+        </View>
+
+        <Text style={styles.nome}>
+          {item.nome}
+        </Text>
+
+        <Text style={styles.categoria}>
+          {item.categoria}
+        </Text>
+
+        <Text style={styles.preco}>
+          R$ {item.preco.toFixed(2)}
+        </Text>
+
+        <TouchableOpacity
+          style={styles.botaoComprar}
+          onPress={() => adicionarCarrinho(item)}
+        >
+
+          <Text style={styles.textoBotao}>
+            ADICIONAR
+          </Text>
+
+        </TouchableOpacity>
+
+      </View>
+    );
+  }
+
+  return (
+
+    <View style={styles.container}>
+
+      {/* CABEÇALHO */}
+
+      <View style={styles.header}>
+
+        <View>
+
+          <Text style={styles.logo}>
+            SPORT+
+          </Text>
+
+          <Text style={styles.subLogo}>
+            Sua loja esportiva
+          </Text>
+
+        </View>
+
+        <TouchableOpacity
+          style={styles.carrinho}
+          onPress={visualizarCarrinho}
+        >
+
+          <Text style={styles.carrinhoTexto}>
+            🛒 {carrinho.length}
+          </Text>
+
+        </TouchableOpacity>
+
+      </View>
+
+
+      {/* BANNER */}
+
+      <View style={styles.banner}>
+
+        <Text style={styles.bannerTitulo}>
+          SEU ESPORTE.
+        </Text>
+
+        <Text style={styles.bannerTitulo}>
+          SEU ESTILO.
+        </Text>
+
+        <Text style={styles.bannerTexto}>
+          Os melhores produtos esportivos
+          em um só lugar!
+        </Text>
+
+        <TouchableOpacity
+          style={styles.botaoOferta}
+          onPress={mostrarOferta}
+        >
+
+          <Text style={styles.textoOferta}>
+            VER OFERTAS
+          </Text>
+
+        </TouchableOpacity>
+
+      </View>
+
+
+      {/* CATEGORIAS */}
+
+      <Text style={styles.tituloCategoria}>
+        Categorias
+      </Text>
+
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={styles.scrollCategorias}
+      >
+
+        <TouchableOpacity
+          style={styles.categoriaBotao}
+          onPress={() => selecionarCategoria('Futebol')}
+        >
+
+          <Text style={styles.categoriaTexto}>
+            ⚽ Futebol
+          </Text>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.categoriaBotao}
+          onPress={() => selecionarCategoria('Corrida')}
+        >
+
+          <Text style={styles.categoriaTexto}>
+            🏃 Corrida
+          </Text>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.categoriaBotao}
+          onPress={() => selecionarCategoria('Academia')}
+        >
+
+          <Text style={styles.categoriaTexto}>
+            🏋️ Academia
+          </Text>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.categoriaBotao}
+          onPress={() => selecionarCategoria('Tênis')}
+        >
+
+          <Text style={styles.categoriaTexto}>
+            🎾 Tênis
+          </Text>
+
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.categoriaBotao}
+          onPress={() => selecionarCategoria('Acessórios')}
+        >
+
+          <Text style={styles.categoriaTexto}>
+            🎒 Acessórios
+          </Text>
+
+        </TouchableOpacity>
+
+      </ScrollView>
+
+
+      {/* TÍTULO */}
+
+      <Text style={styles.tituloProdutos}>
+        Produtos em destaque
+      </Text>
+
+
+      {/* LISTA DE PRODUTOS */}
+
+      <FlatList
+        data={produtos}
+        keyExtractor={(item) => item.id}
+        renderItem={renderProduto}
+        numColumns={2}
+        columnWrapperStyle={styles.linha}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.lista}
+      />
+
+
+      {/* BOTÃO FINALIZAR */}
+
+      {carrinho.length > 0 && (
+
+        <TouchableOpacity
+          style={styles.finalizar}
+          onPress={finalizarCompra}
+        >
+
+          <Text style={styles.finalizarTexto}>
+            FINALIZAR COMPRA
+          </Text>
+
+          <Text style={styles.finalizarPreco}>
+            R$ {total.toFixed(2)}
+          </Text>
+
+        </TouchableOpacity>
+
+      )}
+
+    </View>
+  );
+}
 
 
 const styles = StyleSheet.create({
 
-  container:{
-    backgroundColor:'#140b05',
-    padding:20,
+  container: {
+    flex: 1,
+    backgroundColor: '#F3F4F6'
   },
 
-  titulo:{
-    color:'#d4af37',
-    fontSize:28,
-    fontWeight:'bold',
-    textAlign:'center',
-    marginTop:30,
+
+  /* CABEÇALHO */
+
+  header: {
+    backgroundColor: '#111827',
+    paddingTop: 45,
+    paddingBottom: 18,
+    paddingHorizontal: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
 
-  subtitulo:{
-    color:'#fff',
-    textAlign:'center',
-    marginBottom:20,
+  logo: {
+    color: '#22C55E',
+    fontSize: 30,
+    fontWeight: 'bold'
   },
 
-  banner:{
-    width:'100%',
-    height:220,
-    borderRadius:15,
+  subLogo: {
+    color: '#FFFFFF',
+    fontSize: 13,
+    marginTop: 2
   },
 
-  secao:{
-    color:'#d4af37',
-    fontSize:22,
-    fontWeight:'bold',
-    marginTop:25,
-    marginBottom:15,
+  carrinho: {
+    backgroundColor: '#22C55E',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 25
   },
 
-  card:{
-    backgroundColor:'#25150b',
-    borderRadius:15,
-    padding:15,
-    marginBottom:20,
+  carrinhoTexto: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: 'bold'
   },
 
-  imagem:{
-    width:'100%',
-    height:180,
-    borderRadius:10,
+
+  /* BANNER */
+
+  banner: {
+    backgroundColor: '#16A34A',
+    margin: 15,
+    padding: 20,
+    borderRadius: 15
   },
 
-  nome:{
-    color:'#fff',
-    fontSize:18,
-    fontWeight:'bold',
-    marginTop:10,
+  bannerTitulo: {
+    color: '#FFFFFF',
+    fontSize: 25,
+    fontWeight: 'bold'
   },
 
-  descricao:{
-    color:'#ccc',
-    marginTop:5,
+  bannerTexto: {
+    color: '#DCFCE7',
+    fontSize: 14,
+    marginTop: 8,
+    lineHeight: 20
   },
 
-  input:{
-    backgroundColor:'#fff',
-    height:45,
-    borderRadius:10,
-    paddingHorizontal:15,
-    marginBottom:40,
+  botaoOferta: {
+    backgroundColor: '#FFFFFF',
+    marginTop: 15,
+    paddingVertical: 11,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    alignSelf: 'flex-start'
+  },
+
+  textoOferta: {
+    color: '#15803D',
+    fontWeight: 'bold'
+  },
+
+
+  /* CATEGORIAS */
+
+  tituloCategoria: {
+    fontSize: 19,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginLeft: 15,
+    marginBottom: 8
+  },
+
+  scrollCategorias: {
+    paddingLeft: 15,
+    maxHeight: 50
+  },
+
+  categoriaBotao: {
+    backgroundColor: '#FFFFFF',
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+    marginRight: 8,
+    borderWidth: 1,
+    borderColor: '#D1D5DB'
+  },
+
+  categoriaTexto: {
+    color: '#111827',
+    fontWeight: '500'
+  },
+
+
+  /* PRODUTOS */
+
+  tituloProdutos: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#111827',
+    marginHorizontal: 15,
+    marginTop: 20,
+    marginBottom: 12
+  },
+
+  lista: {
+    paddingHorizontal: 10,
+    paddingBottom: 100
+  },
+
+  linha: {
+    justifyContent: 'space-between'
+  },
+
+  produto: {
+    backgroundColor: '#FFFFFF',
+    width: '48%',
+    marginBottom: 15,
+    padding: 12,
+    borderRadius: 12,
+
+    shadowColor: '#000',
+    shadowOpacity: 0.10,
+    shadowRadius: 5,
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+
+    elevation: 3
+  },
+
+  imagem: {
+    height: 110,
+    backgroundColor: '#DCFCE7',
+    borderRadius: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 10
+  },
+
+  emoji: {
+    fontSize: 55
+  },
+
+  nome: {
+    color: '#111827',
+    fontSize: 16,
+    fontWeight: 'bold'
+  },
+
+  categoria: {
+    color: '#6B7280',
+    fontSize: 12,
+    marginTop: 3
+  },
+
+  preco: {
+    color: '#16A34A',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginTop: 8,
+    marginBottom: 10
+  },
+
+
+  /* BOTÃO COMPRAR */
+
+  botaoComprar: {
+    backgroundColor: '#111827',
+    paddingVertical: 10,
+    borderRadius: 7,
+    alignItems: 'center'
+  },
+
+  textoBotao: {
+    color: '#FFFFFF',
+    fontSize: 12,
+    fontWeight: 'bold'
+  },
+
+
+  /* FINALIZAR */
+
+  finalizar: {
+    position: 'absolute',
+    bottom: 15,
+    left: 15,
+    right: 15,
+    backgroundColor: '#16A34A',
+    padding: 14,
+    borderRadius: 12,
+
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+
+    elevation: 6
+  },
+
+  finalizarTexto: {
+    color: '#FFFFFF',
+    fontSize: 15,
+    fontWeight: 'bold'
+  },
+
+  finalizarPreco: {
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontWeight: 'bold'
   }
 
 });
-
-
-export default App;

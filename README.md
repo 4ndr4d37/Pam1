@@ -1,2 +1,2 @@
 # Pam1
-Heitor Andrade e Felipe Andrade
+Heitor Andrade e Lucas Massimo
